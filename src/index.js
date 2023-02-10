@@ -8,19 +8,27 @@ function fetchDogs() {
     .then(data => renderDogs(data))
 };
 
-function dogToggle(id, isGoodDog) {
+function dogToggle(id) {
     let goodDogButton = document.getElementById("good-dog-button");
-    if (goodDogButton.innerHTML === "Bad Dog!") {
-        goodDogButton.innerHTML = "Good Dog!"
-    } else goodDogButton.innerHTML = "Bad Dog!";
+    let newValue;
+    if (goodDogButton.innerText.includes("Good")) {
+        goodDogButton.innerText = "Bad Dog!"
+        newValue = false
+    } else {
+        goodDogButton.innerText = "Good Dog!"
+        newValue = true
+    }
+    toggleGoodDog(id, newValue)
+}
+
+function toggleGoodDog(id, newValue) {
     fetch(`http://localhost:3000/pups/${id}` , {
         method: "PATCH",
         headers: {
-            "Content-Type": "application/json",
-            "Accept": "application/json"
+            "Content-Type": "application/json"
         },
         body: JSON.stringify({
-            "isGoodDog": isGoodDog ? false : true
+            isGoodDog: newValue
         })
     })
 };
@@ -33,7 +41,7 @@ function handleDogClick(event) {
     dogCard.innerHTML=`
     <img src=${event.target.image}>
     <h2>${event.target.innerHTML}</h2>
-    <button onclick="dogToggle(${dogCard.id}, ${isGoodDog})" id="good-dog-button">${isGoodDog ? "Good Dog!" : "Bad Dog!"}</button>`
+    <button onclick="dogToggle(${dogCard.id})" id="good-dog-button">${isGoodDog ? "Good Dog!" : "Bad Dog!"}</button>`
     dogInfo.appendChild(dogCard);
 };
 
